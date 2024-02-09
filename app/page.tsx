@@ -4,28 +4,47 @@ import { UserButton, auth } from "@clerk/nextjs";
 
 import { LogIn } from "lucide-react";
 import Link from "next/link";
+import { db } from "@/lib/db";
+import { chats } from "@/lib/db/schema";
+import { eq, desc } from "drizzle-orm";
 
-export default function Home() {
+export default async function Home() {
   const { userId } = auth();
   const isAuth = !!userId;
 
+  let latestChat;
+  if (userId) {
+    const _chats = await db
+      .select()
+      .from(chats)
+      .where(eq(chats.userId, userId))
+      .orderBy(desc(chats.createdAt));
+    if (_chats && _chats.length > 0) {
+      latestChat = _chats[0];
+    }
+  }
+
   return (
-    <main className="min-h-screen w-screen overflow-hidden bg-gradient-to-r from-blue-700 via-blue-800 to-gray-900 text-gray-50">
+    <main className="min-h-screen w-screen overflow-hidden bg-gradient-to-r from-rose-100 to-teal-100">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center">
           <div className="flex items-center">
-            <h1 className="mr-3 text-5xl font-semibold">Chat with any pdf</h1>
+            <h1 className="mr-3 text-5xl font-semibold">PaperWit</h1>
             <UserButton afterSignOutUrl="/" />
           </div>
-          {isAuth && (
-            <div className="flex mt-2">
-              <Button>Go To Chats</Button>
-            </div>
-          )}
 
           <p className="max-w-xl mt-2 text-lg">
-            Joins millions of people who are using this app to chat with any
+            Simplifying PDF comprehension and utilization
           </p>
+
+          {isAuth && latestChat && (
+            <div className="flex mt-2 items-center gap-2">
+              <Button>
+                <Link href={`/chats/${latestChat.id}`}>Go To Chats</Link>
+              </Button>
+              <span className="text-slate-400">or</span>
+            </div>
+          )}
 
           <div className="w-full mt-4">
             {isAuth ? (

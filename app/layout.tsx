@@ -8,8 +8,8 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chat With Any PDF",
-  description: `Chat With Any PDF is like a chat app for your documents powered by OpenAI's cutting-edge language technology! Just ask questions about a PDF and get the answers, like highlighting key points or summarizing info. Perfect for studying, reviewing contracts, or working with others. Think "smart document assistant" that makes PDFs easier to understand and use.`,
+  title: "PaperWit",
+  description: `Your document chat app powered by OpenAI's advanced language tech! Simply query your PDFs for insights, like pinpointing key details or summarizing content. Ideal for study, contract review, or collaborative projects. Think of it as your intelligent document companion, simplifying PDF comprehension and utilization`,
 };
 
 export default function RootLayout({

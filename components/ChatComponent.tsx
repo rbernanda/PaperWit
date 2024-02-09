@@ -5,45 +5,54 @@ import { useChat } from "ai/react";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import MessageList from "./MessageList";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Message } from "ai";
 
 type Props = {
   chatId: number;
 };
 
 const ChatComponent = (props: Props) => {
-  const { input, handleInputChange, handleSubmit, messages } = useChat({
-    body: {
-      chatId: props.chatId,
+  const { data } = useQuery({
+    queryKey: ["chat", props.chatId],
+    queryFn: async () => {
+      const response = await axios.post<Message[]>("/api/get-messages", {
+        chatId: props.chatId,
+      });
+      return response.data;
     },
-    api: "/api/chat",
   });
 
+  const { input, handleInputChange, handleSubmit, messages, isLoading } =
+    useChat({
+      body: {
+        chatId: props.chatId,
+      },
+      api: "/api/chat",
+      initialMessages: data || [],
+    });
+
   return (
-    <div className="relative max-h-screen overflow-scroll">
-      {/* Header */}
-      <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit">
-        <h3 className="text-xl font-bold">Chat</h3>
+    <>
+      {/* Conversation Box */}
+      <div className="flex-1 overflow-scroll flex flex-col">
+        <MessageList messages={messages} isGenerating={isLoading} />
       </div>
 
-      {/* Conversation Box */}
-      <MessageList messages={messages} />
-
       {/* Chat Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="sticky bottom-0 inset-x-0 px-2 py-4 bg-white flex"
-      >
+      <form onSubmit={handleSubmit} className="w-full py-2 flex px-4 shadow">
         <Input
           className="w-full"
           value={input}
           onChange={handleInputChange}
-          placeholder="Ask any question..."
+          placeholder="Ask anything about your pdf ..."
         />
         <Button className="bg-blue-600 ml-2">
           <Send className="h-4 w-4" />
         </Button>
       </form>
-    </div>
+    </>
   );
 };
 

@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai-edge";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { getContext } from "@/lib/context";
 import { db } from "@/lib/db";
-import { chats } from "@/lib/db/schema";
+import { chats, messages as messagesDB } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { Message } from "ai/react";
@@ -52,7 +52,24 @@ export async function POST(req: Request) {
       stream: true,
     });
 
-    const stream = OpenAIStream(response);
+    const stream = OpenAIStream(response, {
+      onStart: async () => {
+        // save user messages to db
+        await db.insert(messagesDB).values({
+          chatId,
+          role: "user",
+          content: lastMessage,
+        });
+      },
+      onCompletion: async (completion) => {
+        // save assistant messages to db
+        await db.insert(messagesDB).values({
+          chatId,
+          content: completion,
+          role: "system",
+        });
+      },
+    });
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.log("error calling use chat openai api: ", error);

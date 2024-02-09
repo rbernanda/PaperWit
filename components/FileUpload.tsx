@@ -77,7 +77,7 @@ const FileUpload = () => {
           <>
             <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
             <p className="mt-2 text-sm text-slate-400">
-              Tuning your file to GPT
+              Pouring knowledge to GPT
             </p>
           </>
         ) : (

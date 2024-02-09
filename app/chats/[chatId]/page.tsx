@@ -20,8 +20,11 @@ const page = async ({ params }: Props) => {
     return redirect("/sign-in");
   }
 
-  const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
-  // .orderBy(desc(chats.createdAt));
+  const _chats = await db
+    .select()
+    .from(chats)
+    .where(eq(chats.userId, userId))
+    .orderBy(desc(chats.createdAt));
 
   const chatId = parseInt(params.chatId);
 
@@ -36,21 +39,21 @@ const page = async ({ params }: Props) => {
   const currentChat = _chats.find((chat) => chat.id === chatId);
 
   return (
-    <div className="flex max-h-screen overflow-scroll">
-      <div className="flex w-full max-h-screen overflow-scroll">
-        {/* chat sidebar */}
-        <div className="flex-[1.5] max-w-xs max-h-screen overflow-scroll bg-gray-900">
-          <ChatSideBar chats={_chats} activeChatId={chatId} />
-        </div>
-        {/* PDF Viewer */}
-        <div className="flex-[5] max-h-screen overflow-scroll p-4">
-          <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
-        </div>
+    <div className="relative z-0 flex h-full w-full overflow-hidden max-h-screen">
+      <div className="flex-[1.5] max-w-xs max-h-screen overflow-scroll bg-gray-900">
+        <ChatSideBar chats={_chats} activeChatId={chatId} />
+      </div>
+      {/* PDF Viewer */}
+      <div className="flex-[4] max-h-screen overflow-scroll p-4">
+        <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
+      </div>
 
-        {/* Chat Component  */}
-        <div className="flex-[3] border-l-4 border-l-slate-200">
-          <ChatComponent chatId={chatId} />
+      {/* Chat Component  */}
+      <div className="flex-[3] border-l-4 border-l-slate-200 flex h-full max-h-screen flex-col relative">
+        <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit shadow-sm">
+          <h3 className="text-xl font-bold">Chat</h3>
         </div>
+        <ChatComponent chatId={chatId} />
       </div>
     </div>
   );
