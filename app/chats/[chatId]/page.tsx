@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import ChatSideBar from "@/components/ChatSideBar";
 import PDFViewer from "@/components/PDFViewer";
+import ChatComponent from "@/components/ChatComponent";
 
 type Props = {
   params: {
@@ -33,7 +34,6 @@ const page = async ({ params }: Props) => {
   }
 
   const currentChat = _chats.find((chat) => chat.id === chatId);
-  console.log({ currentChat });
 
   return (
     <div className="flex max-h-screen overflow-scroll">
@@ -49,7 +49,7 @@ const page = async ({ params }: Props) => {
 
         {/* Chat Component  */}
         <div className="flex-[3] border-l-4 border-l-slate-200">
-          {/* <ChatComponent /> */}
+          <ChatComponent />
         </div>
       </div>
     </div>
