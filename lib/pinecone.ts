@@ -1,8 +1,4 @@
-import {
-  Pinecone,
-  RecordMetadata,
-  PineconeRecord,
-} from "@pinecone-database/pinecone";
+import { Pinecone, PineconeRecord } from "@pinecone-database/pinecone";
 import { downloadFromS3 } from "./s3.server";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import {
@@ -12,7 +8,6 @@ import {
 import { getEmbeddings } from "./embeddings";
 import md5 from "md5";
 import { convertIntoAscii } from "./utils";
-import util from "util";
 
 let pc: Pinecone | null = null;
 

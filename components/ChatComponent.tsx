@@ -6,10 +6,17 @@ import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import MessageList from "./MessageList";
 
-type Props = {};
+type Props = {
+  chatId: number;
+};
 
 const ChatComponent = (props: Props) => {
-  const { input, handleInputChange, handleSubmit, messages } = useChat();
+  const { input, handleInputChange, handleSubmit, messages } = useChat({
+    body: {
+      chatId: props.chatId,
+    },
+    api: "/api/chat",
+  });
 
   return (
     <div className="relative max-h-screen overflow-scroll">
