@@ -12,6 +12,7 @@ import {
 import { getEmbeddings } from "./embeddings";
 import md5 from "md5";
 import { convertIntoAscii } from "./utils";
+import util from "util";
 
 let pc: Pinecone | null = null;
 
@@ -48,13 +49,19 @@ export const loadS3IntoPinecone = async (fileKey: string) => {
   const documents = await Promise.all(pages.map(prepareDocument));
 
   // 3. Vectorize the documents and embed them into Pinecone individually
-  const vectors = await Promise.all(documents.flat().map(embedDocument));
+
+  /**
+   * MARK: temporary fix, for quick solution
+   * TODO: Figure out why are some of the vectors values returned from OpenAI are empty
+   */
+  const dirtyVectors = await Promise.all(documents.flat().map(embedDocument));
+  const vectors = dirtyVectors.filter((v) => v.values.length > 0);
 
   // 4. upload to pinecone
   const client = await getPineConeClient();
   const namespace = convertIntoAscii(fileKey);
   const pineconeIndex = client.Index("chat-pdf").namespace(namespace);
-
+  // console.log(util.inspect(vectors, false, null, true /* enable colors */));
   console.log("---inserting vectors into pinecone---");
   pineconeIndex.upsert(vectors);
 

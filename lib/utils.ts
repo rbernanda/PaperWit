@@ -6,6 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function convertIntoAscii(text: string) {
-  // Remvoe non-ascii characters
-  return text.replace(/[^\x00-\x7F]+/g, "");
+  // Remove non ASCII-printable characters
+
+  const asciiText = text.replace(/[^\x00-\x7F]+/g, "");
+  return asciiText;
 }
