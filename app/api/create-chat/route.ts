@@ -5,6 +5,8 @@ import { chats } from "@/lib/db/schema";
 import { getS3Url } from "@/lib/s3";
 import { auth } from "@clerk/nextjs";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   const { userId } = await auth();
 
